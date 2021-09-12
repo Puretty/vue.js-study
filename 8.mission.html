@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+</head>
+
+<body>
+    <h2>제한시간 내 문자 입력하기</h2>
+    <div id="asd">
+        <label>금지문자(,로 나누면 복수입력 가능): <input :disabled="!textdisabled" type="text" v-model="forbidden"></label>
+        <br><br>
+        <label>제한시간 입력(초): <input :disabled="!textdisabled" type="text" v-model.number="num">
+            <button @click="startTimer">시작</button>
+        </label>
+        <p> 남은시간 {{ restSec }} 초</p>
+        <br>
+        <textarea :disabled="textdisabled" v-model="textarea" rows="10" style="width: 30%;"></textarea>
+        <br>
+        <p v-if="hide"> {{ remaining }} 개의 문자를 입력하였습니다.</p>
+        <br>
+        <p v-if="hide"> 벌점: {{ batsu }} (금지문자 1개당 12점)</p>
+    </div>
+
+</body>
+<script>
+    new Vue({
+        el: "#asd",
+
+        data: {
+            forbidden: '',
+            num: '',
+            restSec: '',
+            textarea: '',
+            textdisabled: true,
+            count: 0,
+            hide: false
+        },
+
+        methods: {
+            startTimer: function () {
+                // 공백 있을 시 프로그램 x 
+                if ((this.forbidden && this.num) === "") {
+                    alert('금지문자, 제한시간을 입력해주세요');
+                    location.reload();
+                }
+
+                this.textdisabled = !this.textdisabled;
+                this.restSec = this.num;
+                this.timerObj = setInterval(() => { this.restSec-- }, 1000);
+            }
+        },
+
+        computed: {
+
+            remaining: function () {
+                return this.textarea.length;
+            },
+            batsu: function () {
+                return this.count * 12;
+            }
+        },
+
+        watch: {
+            textarea: function () {
+                // , 기준으로 배열 생성
+                var forbidden2 = this.forbidden.split(",");
+
+                for (var i = 0; i < forbidden2.length; i++) {
+                    var pos = this.textarea.indexOf(forbidden2[i]);
+
+                    if (pos >= 0) {
+                        alert(this.forbidden + "는 입력 할 수 없습니다.");
+                        // 입력문자에서 금지문자를 삭제한다.
+                        this.textarea = this.textarea.substr(0, pos);
+                        this.restSec = this.restSec - 10;
+
+                        // 감점으로 인해 -1 이상 넘어갈시 남은시간 0으로 고정 
+                        if (this.restSec < -1) {
+                            this.restSec = 0;
+                        }
+                        this.count++;
+                    }
+                }
+            },
+            restSec: function () {
+                if (this.restSec <= 0) {
+                    alert("제한시간 입니다.");
+                    clearInterval(this.timerObj);
+                    this.hide = !this.hide;
+                    this.textdisabled = !this.textdisabled;
+                }
+            },
+        }
+    })
+</script>
+
+</html>
