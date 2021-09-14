@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <style>
+        /* 나타나고 있을 때와 사라질 때는 0.5초 */
+        .v-leave-active {
+            transition: 0.5s;
+            transform: translateX(50px);
+        }
+        .v-enter-active {
+            transition: 1s;
+        }
+        .v-move {
+            transition: 2s;
+        }
+        .v-enter {
+            transform: translateX(50px);
+        }
+    </style>
+</head>
+
+<body>
+    <h2>애니메이션이 들어간 숫자 배열 조작과 구구단 출력</h2>
+    <div id="asd">
+        <ul>
+            <transition-group mode="out-in">
+            <li v-for="(item,index) in number_list" :key='item'>{{ item }}
+            </transition-group>
+                <button @click="modifynum(index)">변경</button>
+                <button @click="deletenum(index)">삭제</button>
+            </li>
+        </ul>
+
+        <button @click="addnum">추가</button>
+        <button @click="sortdata(number_list)">정렬</button>
+        <button @click="showgugu">구구단 보이기</button> <br>
+
+        <ul>
+            <transition-group>
+            <li v-if="hide" v-for="items in number_list" :key="items">
+
+                <p v-for="n in 9" :key="n">{{ items }} x {{ n }} = {{ items * n }} </p>
+
+            </li>
+        </transition-group>
+        </ul>
+    </div>
+
+</body>
+<script>
+    new Vue({
+        el: "#asd",
+        data: {
+            number_list: [
+                2, 3, 4, 5, 6, 7, 8, 9
+            ],
+            hide: false
+        },
+        methods: {
+            modifynum: function (index) {
+                    this.number_list.splice(index, 1, this.number_list[index] + 100);
+            },
+            deletenum: function (index) {
+                this.number_list.splice(index, 1);
+            },
+            addnum: function () {
+                if(this.number_list == ''){
+                    this.number_list.push(1);
+                } else {
+                var i = this.number_list.length-1;
+                this.number_list.push(this.number_list[i]+1);
+                }
+            },
+            sortdata: function (listdata) {
+                // 오름차순 정렬
+                listdata.sort(function (a, b) {
+                    return (a < b ? -1 : 1);
+                });
+                // 중복값 제거
+                this.number_list = this.number_list.filter((value, index) => {
+                    return this.number_list.indexOf(value) === index;
+                });
+            },
+            showgugu: function () {
+                this.hide = !this.hide;
+            }
+        }
+    })
+
+</script>
+
+</html>
