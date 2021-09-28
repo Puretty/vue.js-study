@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+        <style>
+            .my-comp {
+                width: 300px;
+                background-color: #ffffe0;
+                border: solid;
+                border-color: gray;
+                border-radius: 8px;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="asd">
+            <my-component v-for="item in myarr" v-bind:num="item">
+            
+            </my-component>
+        </div>
+    
+    </body>
+    <script>
+        var mycom = {
+            template: '<p class="my-comp"> {{ result }} </p>',
+            props: {
+                num: Number
+            },
+            computed: {
+                result: function() {
+                    if( this.num % 2 == 0) {
+                        return this.result = this.num + "은 짝수입니다"
+                    } else {
+                        return this.result = this.num + "은 홀수입니다"
+                    }
+                }
+            }
+        }
+        new Vue({
+            el:"#asd",
+            components: {
+                'my-component': mycom
+            },
+            data: {
+                myarr: [1,2,3,4,5,6,7,8,9,10]
+            }
+        })
+    </script>
+</html>
