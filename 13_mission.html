@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Vue.js sample</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+        <style>
+            .v-move {
+                transition: transform 1s;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>퀴즈</h2>
+        <div id="asd">
+                <div v-for="item in dataArray" v-bind:key="item.title">
+                    <my-product v-bind:object="item"></my-product>
+                </div>
+                <button v-on:click="Question" v-if="show">정답 제출하기</button>
+            <p><input  v-on:change="onFileChange" type="file">
+            <p v-if="asd"> 총 점수 : {{ score }}
+        </div>
+        
+    </body>
+    <script>
+        var Mycom = {
+            props: ["object"],
+            template:`
+            <div style="width:300px; backgroundColor:#ffddaa;">
+                <p style="backgroundColor:#ffa95e;"> {{ object.title }} </p>
+                <p> 정답 :  
+                    <input type="radio" value="true" v-model="object.my_answer"/> O
+                    <input type="radio" value="false" v-model="object.my_answer"/> X </p>
+            </div>`
+        }
+
+        new Vue({
+            el:"#asd",
+            data:{
+                dataArray: [],
+                show: false,
+                asd: false,
+                score: 0,
+            },
+
+            components: {
+                'my-product': Mycom
+            },
+
+            methods:{
+                onFileChange: function(e) {
+                    file = e.target.files[0]
+                    if(file) {
+                        var reader = new FileReader();
+                        var vm = this;
+                        reader.onload = function(e) {
+                            vm.dataArray = JSON.parse(e.target.result);
+                        }
+                        reader.readAsText(file);
+                        this.show = true;
+                    }
+                },
+                Question: function(){
+                    var score = 0;
+                    for( var i = 0; i < this.dataArray.length; i++) {
+                        if(this.dataArray[i].my_answer == this.dataArray[i].answer){
+                            score += this.dataArray[i].point;
+                            }
+                        }
+                    this.score = score;
+                    this.asd = true;
+                    
+                }
+            }
+        });
+    </script>
+</html>
